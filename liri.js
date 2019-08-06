@@ -9,9 +9,9 @@ for (let i = 1; i < modifiedArray.length; i++) {
     parameterArray.push(modifiedArray[i]);
 }
 
-// require("dotenv").config();
-// var keys = require('keys.js');
-// var inquirer = require("inquirer");
+require("dotenv").config();
+var keys = require('./keys');
+var inquirer = require("inquirer");
 var axios = require('axios');
 var moment = require('moment');
 var Spotify = require('node-spotify-api');
@@ -75,10 +75,13 @@ if (com === "concert-this") {
     }
     console.log(song);
 
-    var queryUrl = 'http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&apikey=trilogy';
+    spotify.search({ type: 'track', query: song }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
 
-    spotify.search: function({ type: 'artist OR album OR track', query: 'My search query', limit: 20 }, callback);
-
+        console.log(data.tracks.items[0]);
+    });
 } else if (com === "movie-this") {
     var movieName = parameterArray.join("+");
     if (!movieName) {
