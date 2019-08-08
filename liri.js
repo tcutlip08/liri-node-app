@@ -10,6 +10,7 @@ for (let i = 1; i < modifiedArray.length; i++) {
 }
 
 require("dotenv").config();
+var fs = require("fs");
 var keys = require('./keys');
 var inquirer = require("inquirer");
 var axios = require('axios');
@@ -17,8 +18,42 @@ var moment = require('moment');
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 
+testCommand(com);
 
-if (com === "concert-this") {
+function testCommand(com, dwis) {
+    if (com === "concert-this") {
+        concertThis();
+    } else if (com === "spotify-this-song") {
+        var song;
+        if (dwis) {
+            song = dwis;
+        } else {
+            song = parameterArray.join("+");
+        }
+
+        if (!song) {
+            song = "The+Sign";
+        }
+        
+        spotifyThis(song);
+    } else if (com === "movie-this") {
+        movieThis();
+    } else if (com === "do-what-it-says") {
+        fs.readFile("random.txt", "utf8", function (error, data) {
+
+            if (error) {
+                return console.log(error);
+            }
+
+            var comAndRequest = data.split(", ");
+            testCommand(comAndRequest[0], comAndRequest[1]);
+        });
+    } else {
+        console.log("Please use a proper command (Check README for more info)");
+    }
+}
+
+function concertThis() {
     var artist = parameterArray.join("+");
     var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events/?app_id=codingbootcamp";
     // var data = callAxios(queryUrl);
@@ -68,11 +103,9 @@ if (com === "concert-this") {
             }
             console.log(error.config);
         });
-} else if (com === "spotify-this-song") {
-    var song = parameterArray.join("+");
-    if (!song) {
-        song = "The+Sign";
-    }
+}
+
+function spotifyThis(song) {
     // console.log(song);
 
     spotify.search({ type: 'track', query: song }, function (err, data) {
@@ -89,7 +122,9 @@ if (com === "concert-this") {
         console.log("--------------------");
 
     });
-} else if (com === "movie-this") {
+}
+
+function movieThis() {
     var movieName = parameterArray.join("+");
     if (!movieName) {
         movieName = "Mr+Nobody";
@@ -133,33 +168,4 @@ if (com === "concert-this") {
             }
             console.log(error.config);
         });
-} else if (com === "do-what-it-says") {
-    console.log("4");
-} else {
-    console.log("Please use a proper command (Check README for more info)");
 }
-
-// function callAxios(url) {
-//     axios.get(url)
-//         .then(function (response) {
-//             // console.log(response);
-//             var data = response.data;
-//             console.log(data);
-//             return data;
-
-//         }).catch(function (error) {
-//             if (error.response) {
-//                 console.log('---------------Data---------------');
-//                 console.log(error.response.data);
-//                 console.log('---------------Status---------------');
-//                 console.log(error.response.status);
-//                 console.log('---------------Status---------------');
-//                 console.log(error.response.headers);
-//             } else if (error.request) {
-//                 console.log(error.request);
-//             } else {
-//                 console.log('Error', error.message);
-//             }
-//             console.log(error.config);
-//         });
-// }
