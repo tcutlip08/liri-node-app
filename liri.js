@@ -20,7 +20,7 @@ var spotify = new Spotify(keys.spotify);
 
 if (com === "concert-this") {
     var artist = parameterArray.join("+");
-    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events/?app_id=codingbootcamp";
     // var data = callAxios(queryUrl);
     axios.get(queryUrl)
         .then(function (response) {
@@ -73,7 +73,7 @@ if (com === "concert-this") {
     if (!song) {
         song = "The+Sign";
     }
-    console.log(song);
+    // console.log(song);
 
     spotify.search({ type: 'track', query: song }, function (err, data) {
         if (err) {
@@ -81,6 +81,13 @@ if (com === "concert-this") {
         }
 
         console.log(data.tracks.items[0]);
+        console.log("--------------------");
+        console.log(data.tracks.items[0].artists[0].name);
+        console.log(data.tracks.items[0].name);
+        console.log(data.tracks.items[0].album.name);
+        console.log(data.tracks.items[0].external_urls.spotify);
+        console.log("--------------------");
+
     });
 } else if (com === "movie-this") {
     var movieName = parameterArray.join("+");
